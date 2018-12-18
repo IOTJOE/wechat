@@ -27,7 +27,6 @@ public class SmsController  extends GenericController {
     protected SmsConfigStorage clYxNewConfigStorage;
     @RequestMapping(value = "sendSms")
     public void sendSms(HttpServletResponse response, HttpServletRequest request) throws IOException {
-
         String result="";
         try {
             switch (request.getParameter("tunnel")){

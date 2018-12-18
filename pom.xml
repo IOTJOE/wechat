@@ -27,13 +27,26 @@
     </parent>
 
     <dependencies>
-
+        <dependency>
+            <groupId>net.sourceforge.javacsv</groupId>
+            <artifactId>javacsv</artifactId>
+            <version>2.0</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${boot.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.arronlong</groupId>
+            <artifactId>httpclientutil</artifactId>
+            <version>1.0.4</version>
+        </dependency>
         <!--show warning-->
         <!-- 在tomcat里用的时候要打开
         <dependency>
@@ -152,6 +165,11 @@
             <groupId>com.github.binarywang</groupId>
             <artifactId>weixin-java-mp</artifactId>
             <version>2.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20140107</version>
         </dependency>
     </dependencies>
 

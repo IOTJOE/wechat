@@ -41,7 +41,6 @@ public abstract class GenericController {
         try {
             response.reset();
             response.setContentType(type);
-            response.setCharacterEncoding("utf-8");
             //解决跨域问题
             response.setHeader("Access-Control-Allow-Origin", "*");
             response.getWriter().print(string);
