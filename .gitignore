@@ -1,0 +1,15 @@
+# Created by .ignore support plugin (hsz.mobi)
+/.idea/
+/target/
+/out/
+/bootdemo.log
+/spring-boot-thymeleaf-jpa.iws
+/spring-boot-thymeleaf-jpa.ipr
+/src/main/resources/rebel.xml
+/src/main/resources/rebel-remote.xml
+/bootdemo.log.1
+/spring-boot-thymeleaf-jpa.iml
+/baojinsuo.iml
+/D:/
+/classes/
+/META-INF/
