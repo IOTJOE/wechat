@@ -5,13 +5,13 @@
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.baolishang.springboot</groupId>
-    <artifactId>baolishang</artifactId>
+    <groupId>com.autotrans.springboot</groupId>
+    <artifactId>autotrans</artifactId>
     <version>3.7.0</version>
     <packaging>war</packaging>
 
-    <name>baolishang</name>
-    <description>baolishang backend</description>
+    <name>autotrans</name>
+    <description>autotrans backend</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -48,13 +48,16 @@
             <version>1.0.4</version>
         </dependency>
         <!--show warning-->
-        <!-- 在tomcat里用的时候要打开
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>-->
-
+        <!-- 在tomcat里用的时候要打开-->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-starter-jetty</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -181,7 +184,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>1.3.6.RELEASE</version>
                 <configuration>
-                    <mainClass>com.baolishang.springboot.SpringBootThymeleafApplication</mainClass>
+                    <mainClass>com.autotrans.springboot.SpringBootThymeleafApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

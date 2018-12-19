@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: com.baolishang.springboot.SpringBootThymeleafApplication
+Main-Class: com.autotrans.springboot.SpringBootThymeleafApplication
 
 
