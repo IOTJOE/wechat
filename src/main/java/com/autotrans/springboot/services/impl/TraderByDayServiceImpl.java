@@ -27,4 +27,7 @@ public class TraderByDayServiceImpl implements TraderByDayService {
     public List<TraderByDay> selectByUserAccountAndTransDate(String userAccount, String transDate){
     return traderByDayRepository.selectByUserAccountAndTransDate(userAccount,transDate);
 }
+    public int updateTransStatus(int status,  int  successAmount,int  revokeAmount,String transId, String source,String message,String desc,long id){
+        return traderByDayRepository.update(status,successAmount,revokeAmount,transId, source,message,desc,id);
+    }
 }

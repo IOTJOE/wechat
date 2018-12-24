@@ -30,6 +30,20 @@ public class TraderByDay extends BaseModel {
     private Integer priceType;
     @Column(name="MarketType")
     private Integer marketType;
+    @Column(name="Status")
+    private Integer status;
+    @Column(name="SuccessAmount")
+    private Integer successAmount;
+    @Column(name="RevokeAmount")
+    private Integer revokeAmount;
+    @Column(name="TransId")
+    private String transId;
+    @Column(name="Source")
+    private String source;
+    @Column(name="Message")
+    private String message;
+    @Column(name="Des")
+    private String des;
     @Override
     public Long getId() {
         return id;
@@ -109,5 +123,90 @@ public class TraderByDay extends BaseModel {
     public TraderByDay setMarketType(Integer marketType) {
         this.marketType = marketType;
         return this;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public TraderByDay setStatus(Integer status) {
+        this.status = status;
+        return this;
+    }
+
+    public Integer getSuccessAmount() {
+        return successAmount;
+    }
+
+    public TraderByDay setSuccessAmount(Integer successAmount) {
+        this.successAmount = successAmount;
+        return this;
+    }
+
+    public Integer getRevokeAmount() {
+        return revokeAmount;
+    }
+
+    public TraderByDay setRevokeAmount(Integer revokeAmount) {
+        this.revokeAmount = revokeAmount;
+        return this;
+    }
+
+    public String getTransId() {
+        return transId;
+    }
+
+    public TraderByDay setTransId(String transId) {
+        this.transId = transId;
+        return this;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public TraderByDay setSource(String source) {
+        this.source = source;
+        return this;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public TraderByDay setMessage(String message) {
+        this.message = message;
+        return this;
+    }
+
+    public String getDes() {
+        return des;
+    }
+
+    public TraderByDay setDes(String des) {
+        this.des = des;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "TraderByDay{" +
+                "id=" + id +
+                ", userAccount='" + userAccount + '\'' +
+                ", transDate='" + transDate + '\'' +
+                ", stockId='" + stockId + '\'' +
+                ", price='" + price + '\'' +
+                ", amount=" + amount +
+                ", direction=" + direction +
+                ", priceType=" + priceType +
+                ", marketType=" + marketType +
+                ", status=" + status +
+                ", successAmount=" + successAmount +
+                ", revokeAmount=" + revokeAmount +
+                ", transId='" + transId + '\'' +
+                ", source='" + source + '\'' +
+                ", message='" + message + '\'' +
+                ", des='" + des + '\'' +
+                '}';
     }
 }

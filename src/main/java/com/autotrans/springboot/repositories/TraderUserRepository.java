@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 public interface TraderUserRepository extends JpaRepository<TraderUser, Long> {
 
     TraderUser save(TraderUser traderUser);
-//    @Query("select st from Receiver st where st.openId= :openId ")
-//    Receiver getReceiverByWeixinAcct(@Param("openId") String openId);
+//    @Query("select u from TraderUser st where  u.AutoBuyStatus= :autoBuyStatus and u.Status=1 ")
+//    TraderUser getReceiverByWeixinAcct(@Param("autoBuyStatus") int autoBuyStatus);
 //    @Query("select st from Receiver st where st.phone= :phone ")
 //    Receiver getReceiverByPhone(@Param("phone") String phone);
 }

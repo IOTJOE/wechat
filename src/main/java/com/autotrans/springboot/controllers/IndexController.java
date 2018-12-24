@@ -145,6 +145,236 @@ public class IndexController {
             out.flush();
             out.close();
     }
+    @RequestMapping(value = "/autoTrans")
+    public void autoBuy(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        List<TraderUser> listResult = traderUserService.selectAllTraderUser();
+        for (TraderUser user : listResult){
+            System.out.println(user.getFileName()+"--"+user.getUserAccount());
+            if(user.getStatus()==1&&user.getAutoBuyStatus()==1) {
+            List<TraderByDay> listTraderByDays = readListTraderByDay(user.getUserAccount(),user.getFileName());
+                for (TraderByDay traderByDay : listTraderByDays) {
+                    System.out.println(traderByDay.toString());
+                    //TODO:执行买入操作,调用买入方法
+                    if(traderByDay.getStatus()==1){//1:初始化.2:下单成功3:交易结束
+                        order(user,traderByDay);
+                    }
+                }
+            }
+        }
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.print("----------");//返回json数值
+        out.flush();
+        out.close();
+    }
+    @RequestMapping(value = "/autoSold")
+    public void autoSold(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        List<TraderUser> listResult = traderUserService.selectAllTraderUser();
+        for (TraderUser user : listResult){
+            System.out.println(user.getFileName()+"--"+user.getUserAccount());
+            if(user.getStatus()==1&&user.getAutoSoldStatus()==1) {
+                List<TraderByDay> listTraderByDays = readListTraderByDay(user.getUserAccount(),user.getFileName());
+                for (TraderByDay traderByDay : listTraderByDays) {
+                    System.out.println(traderByDay.toString());
+                    //TODO:执卖出操作
+                    if(traderByDay.getStatus()!=0 && traderByDay.getDirection()==2){//0:下单失败,1:初始化.2:下单成功3:已撤单4:未成交5:部分成交6已成交
+                        //TODO:撤单
+                        try {
+                            deleteOrder(user,traderByDay);
+                        } catch (HttpProcessException e) {
+                            e.printStackTrace();
+                        }
+                        //TODO:更新状态
+                        //总数=已成交数量+撤单数量
+                        //TODO:市价卖出
+                        sold(user,traderByDay);
+                    }
+                }
+            }
+        }
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        out.print("----------");//返回json数值
+        out.flush();
+        out.close();
+    }
+    public void deleteOrder(TraderUser user,TraderByDay traderByDay) throws HttpProcessException, FileNotFoundException {
+        String userAccount = traderByDay.getUserAccount();
+        String orderId = traderByDay.getTransId();
+        String url = user.getTransIp()+"/api/v1.0/orders/"+orderId;
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("client", "*:" + userAccount);
+        HttpResult respResult = APIHttpClient.delete(url, map);
+        System.out.println("返回结果：\n" + respResult.getResult());
+        int status;
+        String desc;
+        if(respResult.getStatusCode() == 200){
+            desc="撤单成功";
+            status=traderByDay.getStatus();
+
+        }else{
+            desc="撤单失败";
+            status=traderByDay.getStatus();
+        }
+        int  successAmount=traderByDay.getSuccessAmount();
+        int  revokeAmount=traderByDay.getRevokeAmount();
+        String transId=traderByDay.getTransId();
+        String source="";
+        String message=SafeUtils.getString(respResult.getResult());
+        long id = traderByDay.getId();
+        traderByDayService.updateTransStatus(status,successAmount,revokeAmount,transId, source,message,desc,id);
+
+    }
+    /**
+     * 市价卖出
+     * @param user
+     * @param traderByDay
+     */
+    public void sold(TraderUser user,TraderByDay traderByDay){
+
+        //TODO:市价卖出
+        String action="";
+        if (traderByDay.getDirection() == 2) {
+            action = "SELL";//direction方向：1买 2到期卖3:挂单预卖
+        }
+        String userAccount = traderByDay.getUserAccount();
+        int marketType = traderByDay.getMarketType();
+        String symbol = traderByDay.getStockId();
+
+        int priceType = SafeUtils.getInt(traderByDay.getPriceType());
+        String type = "MARKET";
+        if(marketType==1){//沪市市价
+            type="MARKET";
+            priceType=6;
+        }
+        else if(marketType==2){//深市市价
+            type="MARKET";
+            priceType=4;
+        }
+        BigDecimal price= SafeUtils.getBigDecimal(traderByDay.getPrice());
+        int amount = SafeUtils.getInt(traderByDay.getAmount());
+        String url = user.getTransIp()+"/api/v1.0/orders?client=*:" +userAccount;
+
+        Map map =new HashMap();
+        map.put("action", action);
+        map.put("symbol",symbol);
+        map.put("type", type);
+        map.put("priceType", priceType);
+        map.put("price", price);
+        map.put("amount", amount);
+        String msg=	JSONUtils.toJSONString(map);
+        System.out.println("request===="+msg);
+        HttpResult result = null ;
+        try{
+            result = APIHttpClient.sendPost(url,msg);
+            System.out.println("result===="+result.getResult());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        JSONObject json=new JSONObject(result.getResult());
+        Map<String,Object> resultTequest=new HashMap<String, Object>();
+        Iterator it = json.keys();
+        while (it.hasNext()) {
+            String key = (String) it.next();
+            Object value = json.get(key);
+            resultTequest.put(key, value);
+        }
+        int status;
+        String desc;
+        if(SafeUtils.getString(resultTequest.get("id")).equals("")){
+            desc="市价下单失败";
+            status=0;
+
+        }else{
+            desc="市价下单成功";
+            status=2;
+        }
+        int  successAmount=0;
+        int  revokeAmount=0;
+        String transId=SafeUtils.getString(resultTequest.get("id"));
+        String source=SafeUtils.getString(resultTequest.get("source"));
+        String message=SafeUtils.getString(resultTequest.get("message"));
+        long id = traderByDay.getId();
+        traderByDayService.updateTransStatus(status,successAmount,revokeAmount,transId, source,message,desc,id);
+
+    }
+    /**
+     * 下单
+     * @param user
+     * @param traderByDay
+     */
+    public void order(TraderUser user,TraderByDay traderByDay){
+        String action;
+        if (traderByDay.getDirection() == 1) {
+            action = "BUY";//direction方向：1买 2到期卖3:挂单预卖
+        } else {
+            action = "SELL";
+        }
+        String userAccount = traderByDay.getUserAccount();
+        int marketType = traderByDay.getMarketType();
+        String symbol = traderByDay.getStockId();
+
+        int priceType = SafeUtils.getInt(traderByDay.getPriceType());
+        String type = "";
+//        if(priceType==0){
+        type="LIMIT";
+        priceType=0;
+//        }
+//        else if((priceType==1 || priceType==6 ) && marketType==1){//沪市市价
+//            type="MARKET";
+//            priceType=6;
+//        }
+//        else if((priceType==1 || priceType==4)&& marketType==2){//深市市价
+//            type="MARKET";
+//            priceType=4;
+//        }
+        BigDecimal price= SafeUtils.getBigDecimal(traderByDay.getPrice());
+        int amount = SafeUtils.getInt(traderByDay.getAmount());
+        String url = user.getTransIp()+"/api/v1.0/orders?client=*:" +userAccount;
+
+        Map map =new HashMap();
+        map.put("action", action);
+        map.put("symbol",symbol);
+        map.put("type", type);
+        map.put("priceType", priceType);
+        map.put("price", price);
+        map.put("amount", amount);
+        String msg=	JSONUtils.toJSONString(map);
+        System.out.println("request===="+msg);
+        HttpResult result = null ;
+        try{
+            result = APIHttpClient.sendPost(url,msg);
+            System.out.println("result===="+result.getResult());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        JSONObject json=new JSONObject(result.getResult());
+        Map<String,Object> resultTequest=new HashMap<String, Object>();
+        Iterator it = json.keys();
+        while (it.hasNext()) {
+            String key = (String) it.next();
+            Object value = json.get(key);
+            resultTequest.put(key, value);
+        }
+        int status;
+        String desc;
+        if(SafeUtils.getString(resultTequest.get("id")).equals("")){
+            desc="下单失败";
+            status=0;
+
+        }else{
+            desc="下单成功";
+            status=2;
+        }
+        int  successAmount=0;
+        int  revokeAmount=0;
+        String transId=SafeUtils.getString(resultTequest.get("id"));
+        String source=SafeUtils.getString(resultTequest.get("source"));
+        String message=SafeUtils.getString(resultTequest.get("message"));
+        long id = traderByDay.getId();
+        traderByDayService.updateTransStatus(status,successAmount,revokeAmount,transId, source,message,desc,id);
+
+    }
     @RequestMapping(value = "/deleteOrder")
 
     public void deleteOrder(HttpServletRequest request, HttpServletResponse response) throws IOException, HttpProcessException {
@@ -191,7 +421,6 @@ public class IndexController {
         String userAccount = request.getParameter("userAccount");
         if(!userAccount.equals("")) {
             //放入需要返回的值
-            Map<String, Object> returnMap = new HashMap<String, Object>();
             //先从数据库读,读不到就读excel
             List<TraderByDay> listResult = traderByDayService.selectByUserAccountAndTransDate(userAccount, getStringDateShort());
             net.sf.json.JSONArray json = net.sf.json.JSONArray.fromObject(listResult);
@@ -212,6 +441,27 @@ public class IndexController {
             out.flush();
             out.close();
         }
+    }
+    public  List<TraderByDay> readListTraderByDay(String userAccount,String fileName) {
+        List<TraderByDay> listResult= null;
+        if (!userAccount.equals("")) {
+            //放入需要返回的值
+            //先从数据库读,读不到就读excel
+            listResult = traderByDayService.selectByUserAccountAndTransDate(userAccount, getStringDateShort());
+//            net.sf.json.JSONArray json = net.sf.json.JSONArray.fromObject(listResult);
+//            String jsonMap = json.toString();
+//            System.out.println(jsonMap);
+            if (listResult.size() == 0) {
+                log.info("第一次读取" + getSqlDate());
+                //转为json
+//            jsonMap = getJSONFromFile("/Users/joe/Downloads/" + fileName + ".csv", "\\,");
+                saveTraderByDay(userAccount, "/Users/joe/Nustore Files/量化团队共享/利曦资产/" + fileName);
+                listResult = traderByDayService.selectByUserAccountAndTransDate(userAccount, getStringDateShort());
+
+            }
+
+        }
+        return listResult;
     }
     public void saveTraderByDay(String userAccount,String csvFilePath){
 
@@ -234,6 +484,7 @@ public class IndexController {
                 traderByDay.setDirection(SafeUtils.getInteger(r.get("Direction")));
                 traderByDay.setPriceType(SafeUtils.getInteger(r.get("PriceType")));
                 traderByDay.setMarketType(SafeUtils.getInteger(r.get("MarketType")));
+                traderByDay.setStatus(1);
                 traderByDayService.save(traderByDay);
             }
             r.close();

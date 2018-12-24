@@ -30,6 +30,10 @@ public class TraderLog extends BaseModel {
     private String price;
     @Column(name="Amount")
     private Integer amount;
+    @Column(name="SuccessAmount")
+    private Integer successAmount;
+    @Column(name="RevokeAmount")
+    private Integer revokeAmount;
     @Column(name="TransId")
     private String transId;
     @Column(name="Direction")
@@ -42,6 +46,9 @@ public class TraderLog extends BaseModel {
     private String message;
     @Column(name="Status")
     private String status;
+
+    @Column(name="DayId")
+    private long dayId;
     @Override
     public Long getId() {
         return id;
@@ -174,6 +181,33 @@ public class TraderLog extends BaseModel {
 
     public TraderLog setStatus(String status) {
         this.status = status;
+        return this;
+    }
+
+    public Integer getSuccessAmount() {
+        return successAmount;
+    }
+
+    public TraderLog setSuccessAmount(Integer successAmount) {
+        this.successAmount = successAmount;
+        return this;
+    }
+
+    public Integer getRevokeAmount() {
+        return revokeAmount;
+    }
+
+    public TraderLog setRevokeAmount(Integer revokeAmount) {
+        this.revokeAmount = revokeAmount;
+        return this;
+    }
+
+    public long getDayId() {
+        return dayId;
+    }
+
+    public TraderLog setDayId(long dayId) {
+        this.dayId = dayId;
         return this;
     }
 }

@@ -32,6 +32,10 @@ public class TraderUser extends BaseModel {
     private String transIp;
     @Column(name="Status")
     private int status;
+    @Column(name="AutoBuyStatus")
+    private int autoBuyStatus;
+    @Column(name="AutoSoldStatus")
+    private int autoSoldStatus;
     @Override
     public Long getId() {
         return id;
@@ -120,6 +124,24 @@ public class TraderUser extends BaseModel {
 
     public TraderUser setStatus(int status) {
         this.status = status;
+        return this;
+    }
+
+    public int getAutoBuyStatus() {
+        return autoBuyStatus;
+    }
+
+    public TraderUser setAutoBuyStatus(int autoBuyStatus) {
+        this.autoBuyStatus = autoBuyStatus;
+        return this;
+    }
+
+    public int getAutoSoldStatus() {
+        return autoSoldStatus;
+    }
+
+    public TraderUser setAutoSoldStatus(int autoSoldStatus) {
+        this.autoSoldStatus = autoSoldStatus;
         return this;
     }
 }
