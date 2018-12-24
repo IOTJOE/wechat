@@ -174,19 +174,31 @@ public class IndexController {
             System.out.println(user.getFileName()+"--"+user.getUserAccount());
             if(user.getStatus()==1&&user.getAutoSoldStatus()==1) {
                 List<TraderByDay> listTraderByDays = readListTraderByDay(user.getUserAccount(),user.getFileName());
-                for (TraderByDay traderByDay : listTraderByDays) {
+                for (TraderByDay traderByDay : listTraderByDays) {//TODO:1.撤单
                     System.out.println(traderByDay.toString());
-                    //TODO:执卖出操作
                     if(traderByDay.getStatus()!=0 && traderByDay.getDirection()==2){//0:下单失败,1:初始化.2:下单成功3:已撤单4:未成交5:部分成交6已成交
-                        //TODO:撤单
                         try {
                             deleteOrder(user,traderByDay);
                         } catch (HttpProcessException e) {
                             e.printStackTrace();
                         }
-                        //TODO:更新状态
+
+                    }
+                }
+                for (TraderByDay traderByDay : listTraderByDays) {
+                    //TODO:2.更新数据traderByDay的成交数量,撤单数量,成交状态
+                    System.out.println(traderByDay.toString());
+                    if(traderByDay.getStatus()!=0 && traderByDay.getDirection()==2){//0:下单失败,1:初始化.2:下单成功3:已撤单4:未成交5:部分成交6已成交
+
                         //总数=已成交数量+撤单数量
-                        //TODO:市价卖出
+                    }
+                }
+                //TODO:3.执卖出操作
+                listTraderByDays = readListTraderByDay(user.getUserAccount(),user.getFileName());
+                for (TraderByDay traderByDay : listTraderByDays) {
+                    System.out.println(traderByDay.toString());
+                    if(traderByDay.getStatus()==3 && traderByDay.getDirection()==2){//0:下单失败,1:初始化.2:下单成功3:已撤单4:未成交5:部分成交6已成交
+                        //TODO:市价卖出,这里数量等于撤单数量
                         sold(user,traderByDay);
                     }
                 }
@@ -252,7 +264,7 @@ public class IndexController {
             priceType=4;
         }
         BigDecimal price= SafeUtils.getBigDecimal(traderByDay.getPrice());
-        int amount = SafeUtils.getInt(traderByDay.getAmount());
+        int amount = SafeUtils.getInt(traderByDay.getRevokeAmount());//撤单的数量
         String url = user.getTransIp()+"/api/v1.0/orders?client=*:" +userAccount;
 
         Map map =new HashMap();
