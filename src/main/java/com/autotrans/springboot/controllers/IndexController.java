@@ -154,7 +154,7 @@ public class IndexController {
             List<TraderByDay> listTraderByDays = readListTraderByDay(user.getUserAccount(),user.getFileName());
                 for (TraderByDay traderByDay : listTraderByDays) {
                     System.out.println(traderByDay.toString());
-                    //TODO:执行买入操作,调用买入方法
+                    //执行买入操作,调用买入方法
                     if(traderByDay.getStatus()==1){//1:初始化.2:下单成功3:交易结束
                         order(user,traderByDay);
                     }
@@ -174,7 +174,7 @@ public class IndexController {
             System.out.println(user.getFileName()+"--"+user.getUserAccount());
             if(user.getStatus()==1&&user.getAutoSoldStatus()==1) {
                 List<TraderByDay> listTraderByDays = readListTraderByDay(user.getUserAccount(),user.getFileName());
-                for (TraderByDay traderByDay : listTraderByDays) {//TODO:1.撤单
+                for (TraderByDay traderByDay : listTraderByDays) {//1.撤单
                     System.out.println(traderByDay.toString());
                     if(traderByDay.getStatus()!=0 && traderByDay.getDirection()==2){//0:下单失败,1:初始化.2:下单成功3:已撤单4:未成交5:部分成交6已成交
                         try {
@@ -186,19 +186,18 @@ public class IndexController {
                     }
                 }
                 for (TraderByDay traderByDay : listTraderByDays) {
-                    //TODO:2.更新数据traderByDay的成交数量,撤单数量,成交状态
+
                     System.out.println(traderByDay.toString());
                     if(traderByDay.getStatus()!=0 && traderByDay.getDirection()==2){//0:下单失败,1:初始化.2:下单成功3:已撤单4:未成交5:部分成交6已成交
-
-                        //总数=已成交数量+撤单数量
+                    //TODO:2.更新数据traderByDay的成交数量,撤单数量,成交状态
                     }
                 }
-                //TODO:3.执卖出操作
+                //3.执卖出操作
                 listTraderByDays = readListTraderByDay(user.getUserAccount(),user.getFileName());
                 for (TraderByDay traderByDay : listTraderByDays) {
                     System.out.println(traderByDay.toString());
                     if(traderByDay.getStatus()==3 && traderByDay.getDirection()==2){//0:下单失败,1:初始化.2:下单成功3:已撤单4:未成交5:部分成交6已成交
-                        //TODO:市价卖出,这里数量等于撤单数量
+                        //市价卖出,这里数量等于撤单数量
                         sold(user,traderByDay);
                     }
                 }
@@ -244,7 +243,6 @@ public class IndexController {
      */
     public void sold(TraderUser user,TraderByDay traderByDay){
 
-        //TODO:市价卖出
         String action="";
         if (traderByDay.getDirection() == 2) {
             action = "SELL";//direction方向：1买 2到期卖3:挂单预卖
