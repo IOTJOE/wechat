@@ -179,7 +179,7 @@ public class SMSHttpRequest {
               
                 Map.Entry<String, String> entry = entries.next();  
                 param.append(entry.getKey()+"="+entry.getValue()+"&");
-//                System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());  
+//                System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
               
             } 
             out.print(param.toString());

@@ -19,7 +19,7 @@ public class TraderByDayServiceImpl implements TraderByDayService {
     private static final Logger logger = LoggerFactory.getLogger(TraderByDayServiceImpl.class);
 
     @Autowired
-    private TraderByDayRepository traderByDayRepository;
+    private TraderByDayRepository  traderByDayRepository;
     public TraderByDay save(TraderByDay traderByDay){
         return traderByDayRepository.save(traderByDay);
     }

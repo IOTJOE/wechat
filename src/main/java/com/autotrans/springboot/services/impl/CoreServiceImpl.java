@@ -71,11 +71,11 @@ public class CoreServiceImpl implements CoreService {
         httpget.setConfig(requestConfig);
 
         CloseableHttpResponse response = httpclient.execute(httpget);
-        System.out.println("StatusCode -> " + response.getStatusLine().getStatusCode());
+        logger.info("StatusCode -> " + response.getStatusLine().getStatusCode());
 
         HttpEntity entity = response.getEntity();
         String jsonStr = EntityUtils.toString(entity);
-        System.out.println(jsonStr);
+        logger.info(jsonStr);
 
         httpget.releaseConnection();
     }
@@ -88,11 +88,11 @@ public class CoreServiceImpl implements CoreService {
         httppost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
 
         CloseableHttpResponse response = httpclient.execute(httppost);
-        System.out.println(response.toString());
+        logger.info(response.toString());
 
         HttpEntity entity = response.getEntity();
         String jsonStr = EntityUtils.toString(entity, "utf-8");
-        System.out.println(jsonStr);
+        logger.info(jsonStr);
 
         httppost.releaseConnection();
     }

@@ -44,6 +44,29 @@ public class TraderByDay extends BaseModel {
     private String message;
     @Column(name="Des")
     private String des;
+    @Column(name="BuyDate")
+    private String buyDate;
+    @Column(name="SellDate")
+    private String sellDate;
+
+    public String getBuyDate() {
+        return buyDate;
+    }
+
+    public TraderByDay setBuyDate(String buyDate) {
+        this.buyDate = buyDate;
+        return this;
+    }
+
+    public String getSellDate() {
+        return sellDate;
+    }
+
+    public TraderByDay setSellDate(String sellDate) {
+        this.sellDate = sellDate;
+        return this;
+    }
+
     @Override
     public Long getId() {
         return id;

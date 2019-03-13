@@ -231,8 +231,8 @@ public class RSAUtils {
     }
 
     public static void main(String[] args){
-//        System.out.println(RSAUtils.encrypt("D:\\key\\publicKey.keystore", "111111"));
-//        System.out.println(RSAUtils.decrypt("D:\\key\\privateKey.keystore", "gy9Y4nCZ71LrV1VO4aWLzicttujYPRvtvegJAHZ6qOubkNkAGkpMAeKPGYd5oZymduH08yl5t9PDeLuwQW1FHbGxIUu9TjdPRPKXcPUa5s+rpC53JOUR52WtDYm4FlnQP9kPsOYEkh+jq4/Nlr83fi1X4ypbGez5r4+OgqQOWFI="));
+//        logger.info(RSAUtils.encrypt("D:\\key\\publicKey.keystore", "111111"));
+//        logger.info(RSAUtils.decrypt("D:\\key\\privateKey.keystore", "gy9Y4nCZ71LrV1VO4aWLzicttujYPRvtvegJAHZ6qOubkNkAGkpMAeKPGYd5oZymduH08yl5t9PDeLuwQW1FHbGxIUu9TjdPRPKXcPUa5s+rpC53JOUR52WtDYm4FlnQP9kPsOYEkh+jq4/Nlr83fi1X4ypbGez5r4+OgqQOWFI="));
         generateKeyPair("F:\\key");
     }
 }  

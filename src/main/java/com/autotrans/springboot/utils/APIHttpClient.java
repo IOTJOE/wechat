@@ -18,6 +18,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -63,7 +65,7 @@ public class APIHttpClient {
 	 */
 	public String post(String parameters) {
 		String body = null;
-		logger.info("parameters:" + parameters);
+		System.out.println("parameters:" + parameters);
  
 		if (method != null & parameters != null
 				&& !"".equals(parameters.trim())) {
@@ -77,8 +79,8 @@ public class APIHttpClient {
 				HttpResponse response = httpClient.execute(method);
 				endTime = System.currentTimeMillis();
 				int statusCode = response.getStatusLine().getStatusCode();
-				logger.info("statusCode:" + statusCode);
-				logger.info("调用API 花费时间(单位：毫秒)：" + (endTime - startTime));
+				System.out.println("statusCode:" + statusCode);
+				System.out.println("调用API 花费时间(单位：毫秒)：" + (endTime - startTime));
 				if (statusCode != HttpStatus.SC_OK) {
 					logger.error("Method failed:" + response.getStatusLine());
 					status = 1;
@@ -91,13 +93,13 @@ public class APIHttpClient {
 				// 网络错误
 				status = 3;
 			} finally {
-				logger.info("调用接口状态：" + status);
+				System.out.println("调用接口状态：" + status);
 			}
  
 		}
 		return body;
 	}
-	public static HttpResult sendPost(String url,String json) throws HttpProcessException, FileNotFoundException {
+	public static HttpResult sendPost(String url,String json) {
 		Header[] headers = HttpHeader.custom()
 				.contentType("application/json")
 				.accept("application/json")
@@ -117,8 +119,14 @@ public class APIHttpClient {
 
 				.client(client);    //如果只是简单使用，无需设置，会自动获取默认的一个client对象
 //		String result = HttpClientUtil.post(config);
-		HttpResult result = HttpClientUtil.sendAndGetResp(config);
-		return result;
+
+        HttpResult result = null;
+        try {
+            result = HttpClientUtil.sendAndGetResp(config);
+        } catch (HttpProcessException e) {
+            e.printStackTrace();
+        }
+        return result;
 	}
 	public static HttpResult delete(String url,Map map) throws HttpProcessException, FileNotFoundException {
 		Header[] headers = HttpHeader.custom()
@@ -147,14 +155,55 @@ public class APIHttpClient {
 		return respResult;
 	}
 	public static void main(String[] args) throws HttpProcessException, FileNotFoundException {
-		String url = "http://192.168.130.139:8888/api/v1.0/orders/3232";
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("client", "*:43429990");
-		System.out.println(delete(url,map));
+//		String url = "http://192.168.130.139:8888/api/v1.0/orders/3232";
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		map.put("client", "*:43429990");
+//		System.out.println(delete(url,map));
+		String url = "http://192.168.130.139:8888/api/v1.0/orders?client=*:53691611";
+
+		//最简单的使用：
+//		String html = HttpClientUtil.get(HttpConfig.custom().url(url));
+//		System.out.println(html);
+		JSONObject columsObject =  new JSONObject(HttpClientUtil.get(HttpConfig.custom().url(url))).getJSONObject("dataTable");
+		JSONArray columsArr1 =columsObject.getJSONArray("columns");
+		JSONArray columsArr2 =columsObject.getJSONArray("rows");
+		int orderIndex = 0;
+		int successAmountIndex = 0;
+		int revokeAmountIndex = 0;
+		System.out.println(columsArr2.length());
+		for(int i = 0;i<columsArr1.length();i++){
+			if(SafeUtils.getString(columsArr1.get(i)).equals("合同编号")||SafeUtils.getString(columsArr1.get(i)).equals("委托编号")){
+				orderIndex=i;
+			}
+			if(SafeUtils.getString(columsArr1.get(i)).equals("成交数量")){
+				successAmountIndex=i;
+			}
+			if(SafeUtils.getString(columsArr1.get(i)).equals("委托数量")){
+				revokeAmountIndex=i;
+			}
+		}
+//		System.out.println(columsArr.getJSONArray(0).get(11));
+		for(int i = 0;i<columsArr2.length();i++){
+
+			String orderId = SafeUtils.getString(columsArr2.getJSONArray(i).get(orderIndex));
+			int successAmount = SafeUtils.getInt(columsArr2.getJSONArray(i).get(successAmountIndex));
+			int revokeAmount = SafeUtils.getInt(columsArr2.getJSONArray(i).get(revokeAmountIndex));
+			System.out.println(orderId+"---"+successAmount+"---"+revokeAmount);
+		}
+
+//		Map<String,Object> resultTequest=new HashMap<String, Object>();
+//		Iterator it = json.keys();
+//		while (it.hasNext()) {
+//			String key = (String) it.next();
+//			Object value = json.get(key);
+//			resultTequest.put(key, value);
+//		}
+//		System.out.println("---------------"+resultTequest.toString());
+//		System.out.println("---------------"+resultTequest.get("dataTable"));
 
 	}
 	public static void main2(String[] args) throws HttpProcessException, FileNotFoundException {
-		String url = "http://192.168.130.139:8888/api/v1.0/delete/976955318?client=*:43429990";
+		String url = "http://192.168.130.139:8888/api/v1.0/orders?client=*:43429990";
 
 		//最简单的使用：
 		String html = HttpClientUtil.get(HttpConfig.custom().url(url));
@@ -225,7 +274,7 @@ public class APIHttpClient {
 		//如果指向看是否访问正常
 		//String result3 = HttpClientUtil.head(config); // 返回Http协议号+状态码
 		//int statusCode = HttpClientUtil.status(config);//返回状态码
-
+		System.out.println();
 		//[新增方法]sendAndGetResp，可以返回原生的HttpResponse对象，
 		//同时返回常用的几类对象：result、header、StatusLine、StatusCode
 		HttpResult respResult = HttpClientUtil.sendAndGetResp(config);

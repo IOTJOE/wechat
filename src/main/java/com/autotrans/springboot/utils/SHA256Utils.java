@@ -33,9 +33,9 @@ public class SHA256Utils {
         String tempStr = null;
         StringBuilder stb = new StringBuilder();
         for (int i = 0; i < origBytes.length; i++) {
-            // System.out.println("and by bit: " + (origBytes[i] & 0xff));
-            // System.out.println("no and: " + origBytes[i]);
-            // System.out.println("---------------------------------------------");
+            // logger.info("and by bit: " + (origBytes[i] & 0xff));
+            // logger.info("no and: " + origBytes[i]);
+            // logger.info("---------------------------------------------");
             // 这里按位与是为了把字节转整时候取其正确的整数，java中一个int是4个字节
             // 如果origBytes[i]最高位为1，则转为int时，int的前三个字节都被1填充了
             tempStr = Integer.toHexString(origBytes[i] & 0xff);

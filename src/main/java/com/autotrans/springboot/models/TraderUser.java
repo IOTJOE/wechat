@@ -36,6 +36,10 @@ public class TraderUser extends BaseModel {
     private int autoBuyStatus;
     @Column(name="AutoSoldStatus")
     private int autoSoldStatus;
+    @Column(name="Terminal")
+    private int terminal;
+    @Column(name="Password")
+    private String password;
     @Override
     public Long getId() {
         return id;
@@ -52,6 +56,15 @@ public class TraderUser extends BaseModel {
 
     public TraderUser setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public TraderUser setPassword(String password) {
+        this.password = password;
         return this;
     }
 
@@ -142,6 +155,15 @@ public class TraderUser extends BaseModel {
 
     public TraderUser setAutoSoldStatus(int autoSoldStatus) {
         this.autoSoldStatus = autoSoldStatus;
+        return this;
+    }
+
+    public int getTerminal() {
+        return terminal;
+    }
+
+    public TraderUser setTerminal(int terminal) {
+        this.terminal = terminal;
         return this;
     }
 }

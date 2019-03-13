@@ -18,7 +18,7 @@ public interface TraderByDayRepository extends JpaRepository<TraderByDay, Long> 
     TraderByDay save(TraderByDay traderByDay);
 //    @Query("select st from Receiver st where st.openId= :openId ")
 //    Receiver getReceiverByWeixinAcct(@Param("openId") String openId);
-    @Query("select st from TraderByDay st where st.userAccount= :userAccount and st.transDate= :transDate ")
+    @Query("select st from TraderByDay st where st.userAccount= :userAccount and st.transDate >= :transDate ")
     List<TraderByDay> selectByUserAccountAndTransDate(@Param("userAccount") String userAccount,@Param("transDate") String transDate);
     @Modifying
     @Query("update  TraderByDay st set st.status= :status, st.successAmount= :successAmount,st.revokeAmount= :revokeAmount,st.transId = :transId,st.source= :source,st.message= :message,st.des = :des  where st.id= :id ")
