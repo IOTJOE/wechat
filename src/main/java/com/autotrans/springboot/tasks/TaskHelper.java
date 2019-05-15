@@ -22,7 +22,7 @@ public class TaskHelper {
     }
 //    @Scheduled(cron = "0 26 9 ? * MON-FRI")
     public void autoTrans2(){
-        logger.info("定时任务---自动下单");   
+        logger.info("定时任务---自动下单");
         transService.autoTrans(1);
 
     }
